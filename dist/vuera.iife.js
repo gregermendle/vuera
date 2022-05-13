@@ -336,73 +336,79 @@ var makeReactContainer = function makeReactContainer(Component) {
   }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
 };
 
-var ReactWrapper = {
-  props: ['component', 'passedProps'],
-  render: function render(createElement) {
-    return createElement('div', { ref: 'react' });
-  },
-
-  methods: {
-    mountReactComponent: function mountReactComponent(component) {
-      var _this2 = this;
-
-      var Component = makeReactContainer(component);
-      var children = this.$slots.default !== undefined ? { children: this.$slots.default } : {};
-      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, children, {
-        ref: function ref(_ref) {
-          return _this2.reactComponentRef = _ref;
-        }
-      })), this.$refs.react);
-    }
-  },
-  mounted: function mounted() {
-    this.mountReactComponent(this.$props.component);
-  },
-  beforeDestroy: function beforeDestroy() {
-    ReactDOM.unmountComponentAtNode(this.$refs.react);
-  },
-  updated: function updated() {
-    /**
-     * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
-     * `$slots` or `$children`.
-     */
-    if (this.$slots.default !== undefined) {
-      this.reactComponentRef.setState({ children: this.$slots.default });
-    } else {
-      this.reactComponentRef.setState({ children: null });
-    }
-  },
-
-  inheritAttrs: false,
-  watch: {
-    $attrs: {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$attrs));
-      },
-
-      deep: true
+var createReactWrapper = function createReactWrapper() {
+  var renderFn = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ReactDOM.render;
+  var unmountFn = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ReactDOM.unmountComponentAtNode;
+  return {
+    props: ['component', 'passedProps'],
+    render: function render(createElement) {
+      return createElement('div', { ref: 'react' });
     },
-    '$props.component': {
-      handler: function handler(newValue) {
-        this.mountReactComponent(newValue);
+
+    methods: {
+      mountReactComponent: function mountReactComponent(component) {
+        var _this2 = this;
+
+        var Component = makeReactContainer(component);
+        var children = this.$slots.default !== undefined ? { children: this.$slots.default } : {};
+        renderFn(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, children, {
+          ref: function ref(_ref) {
+            return _this2.reactComponentRef = _ref;
+          }
+        })), this.$refs.react);
       }
     },
-    $listeners: {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$listeners));
-      },
-
-      deep: true
+    mounted: function mounted() {
+      this.mountReactComponent(this.$props.component);
     },
-    '$props.passedProps': {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
-      },
+    beforeDestroy: function beforeDestroy() {
+      unmountFn(this.$refs.react);
+    },
+    updated: function updated() {
+      /**
+       * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
+       * `$slots` or `$children`.
+       */
+      if (this.$slots.default !== undefined) {
+        this.reactComponentRef.setState({ children: this.$slots.default });
+      } else {
+        this.reactComponentRef.setState({ children: null });
+      }
+    },
 
-      deep: true
+    inheritAttrs: false,
+    watch: {
+      $attrs: {
+        handler: function handler() {
+          this.reactComponentRef.setState(_extends({}, this.$attrs));
+        },
+
+        deep: true
+      },
+      '$props.component': {
+        handler: function handler(newValue) {
+          this.mountReactComponent(newValue);
+        }
+      },
+      $listeners: {
+        handler: function handler() {
+          this.reactComponentRef.setState(_extends({}, this.$listeners));
+        },
+
+        deep: true
+      },
+      '$props.passedProps': {
+        handler: function handler() {
+          this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
+        },
+
+        deep: true
+      }
     }
-  }
+  };
 };
+
+var ReactWrapper = createReactWrapper();
 
 function isReactComponent(component) {
   if ((typeof component === 'undefined' ? 'undefined' : _typeof(component)) === 'object' && !isReactForwardReference(component)) {
@@ -487,6 +493,7 @@ function defaultConfig() {
 var config = defaultConfig();
 
 exports.ReactWrapper = ReactWrapper;
+exports.createReactWrapper = createReactWrapper;
 exports.VueWrapper = VueContainer;
 exports.__vueraReactResolver = babelReactResolver$$1;
 exports.VuePlugin = VuePlugin;

@@ -13,5 +13,5 @@ export {
   VuePlugin,
   VueInReact,
   ReactInVue,
-  config,
+  config
 }

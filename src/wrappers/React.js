@@ -6,7 +6,7 @@ const makeReactContainer = Component => {
   return class ReactInVue extends React.Component {
     static displayName = `ReactInVue${Component.displayName || Component.name || 'Component'}`
 
-    constructor (props) {
+    constructor(props) {
       super(props)
 
       /**
@@ -17,13 +17,13 @@ const makeReactContainer = Component => {
       this.state = { ...props }
     }
 
-    wrapVueChildren (children) {
+    wrapVueChildren(children) {
       return {
-        render: createElement => createElement('div', children),
+        render: createElement => createElement('div', children)
       }
     }
 
-    render () {
+    render() {
       const {
         children,
         // Vue attaches an event handler, but it is missing an event name, so
@@ -35,21 +35,22 @@ const makeReactContainer = Component => {
       const wrappedChildren = this.wrapVueChildren(children)
 
       return (
-        <Component {...rest}>
-          {children && <VueWrapper component={wrappedChildren} />}
-        </Component>
+        <Component {...rest}>{children && <VueWrapper component={wrappedChildren} />}</Component>
       )
     }
   }
 }
 
-export const createReactWrapper = (renderFn = ReactDOM.render, unmountFn = ReactDOM.unmountComponentAtNode) => ({
+export const createReactWrapper = (
+  renderFn = ReactDOM.render,
+  unmountFn = ReactDOM.unmountComponentAtNode
+) => ({
   props: ['component', 'passedProps'],
-  render (createElement) {
+  render(createElement) {
     return createElement('div', { ref: 'react' })
   },
   methods: {
-    mountReactComponent (component) {
+    mountReactComponent(component) {
       const Component = makeReactContainer(component)
       const children = this.$slots.default !== undefined ? { children: this.$slots.default } : {}
       renderFn(
@@ -62,15 +63,15 @@ export const createReactWrapper = (renderFn = ReactDOM.render, unmountFn = React
         />,
         this.$refs.react
       )
-    },
+    }
   },
-  mounted () {
+  mounted() {
     this.mountReactComponent(this.$props.component)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     unmountFn(this.$refs.react)
   },
-  updated () {
+  updated() {
     /**
      * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
      * `$slots` or `$children`.
@@ -84,29 +85,29 @@ export const createReactWrapper = (renderFn = ReactDOM.render, unmountFn = React
   inheritAttrs: false,
   watch: {
     $attrs: {
-      handler () {
+      handler() {
         this.reactComponentRef.setState({ ...this.$attrs })
       },
-      deep: true,
+      deep: true
     },
     '$props.component': {
-      handler (newValue) {
+      handler(newValue) {
         this.mountReactComponent(newValue)
-      },
+      }
     },
     $listeners: {
-      handler () {
+      handler() {
         this.reactComponentRef.setState({ ...this.$listeners })
       },
-      deep: true,
+      deep: true
     },
     '$props.passedProps': {
-      handler () {
+      handler() {
         this.reactComponentRef.setState({ ...this.$props.passedProps })
       },
-      deep: true,
-    },
-  },
+      deep: true
+    }
+  }
 })
 
-export default createReactWrapper();
+export default createReactWrapper()
