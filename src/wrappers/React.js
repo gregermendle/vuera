@@ -43,7 +43,7 @@ const makeReactContainer = Component => {
   }
 }
 
-export default {
+export const createReactWrapper = (renderFn = ReactDOM.render, unmountFn = ReactDOM.unmountComponentAtNode) => ({
   props: ['component', 'passedProps'],
   render (createElement) {
     return createElement('div', { ref: 'react' })
@@ -52,7 +52,7 @@ export default {
     mountReactComponent (component) {
       const Component = makeReactContainer(component)
       const children = this.$slots.default !== undefined ? { children: this.$slots.default } : {}
-      ReactDOM.render(
+      renderFn(
         <Component
           {...this.$props.passedProps}
           {...this.$attrs}
@@ -68,7 +68,7 @@ export default {
     this.mountReactComponent(this.$props.component)
   },
   beforeDestroy () {
-    ReactDOM.unmountComponentAtNode(this.$refs.react)
+    unmountFn(this.$refs.react)
   },
   updated () {
     /**
@@ -107,4 +107,6 @@ export default {
       deep: true,
     },
   },
-}
+})
+
+export default createReactWrapper();
