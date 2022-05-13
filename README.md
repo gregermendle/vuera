@@ -35,8 +35,8 @@ Or use [React] components in your [Vue] app:
 
 ## Use cases
 
-- 👨‍👩‍👧 Using both Vue and React in one app
-- 🏃 Migrating from React to Vue or from Vue to React
+- 👨‍👩‍👧 Using both Vue and React in one app (Uh, yea please don't do this)
+- 🏃 Migrating from React to Vue or from Vue to React (Only this... Please.)
 
 ## Installation
 
