@@ -321,13 +321,14 @@ var makeReactContainer = function makeReactContainer(Component) {
         var _state = this.state,
             children = _state.children,
             _invoker = _state[''],
-            rest = objectWithoutProperties(_state, ['children', '']);
+            outerRef = _state.outerRef,
+            rest = objectWithoutProperties(_state, ['children', '', 'outerRef']);
 
         var wrappedChildren = this.wrapVueChildren(children);
 
         return React.createElement(
           Component,
-          rest,
+          _extends({ ref: outerRef }, rest),
           children && React.createElement(VueContainer, { component: wrappedChildren })
         );
       }
@@ -352,6 +353,7 @@ var createReactWrapper = function createReactWrapper() {
         var Component = makeReactContainer(component);
         var children = this.$slots.default !== undefined ? { children: this.$slots.default } : {};
         renderFn(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, children, {
+          outerRef: this.$props.passedProps && this.$props.passedProps.ref ? this.$props.passedProps.ref : undefined,
           ref: function ref(_ref) {
             return _this2.reactComponentRef = _ref;
           }
