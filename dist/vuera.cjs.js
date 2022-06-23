@@ -397,14 +397,18 @@ var createReactWrapper = function createReactWrapper() {
       },
       $listeners: {
         handler: function handler() {
-          this.reactComponentRef.setState(_extends({}, this.$listeners));
+          if (this.reactComponentRef) {
+            this.reactComponentRef.setState(_extends({}, this.$listeners));
+          }
         },
 
         deep: true
       },
       '$props.passedProps': {
         handler: function handler() {
-          this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
+          if (this.reactComponentRef) {
+            this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
+          }
         },
 
         deep: true

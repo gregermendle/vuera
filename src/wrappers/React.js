@@ -105,13 +105,17 @@ export const createReactWrapper = (
     },
     $listeners: {
       handler () {
-        this.reactComponentRef.setState({ ...this.$listeners })
+        if (this.reactComponentRef) {
+          this.reactComponentRef.setState({ ...this.$listeners })
+        }
       },
       deep: true,
     },
     '$props.passedProps': {
       handler () {
-        this.reactComponentRef.setState({ ...this.$props.passedProps })
+        if (this.reactComponentRef) {
+          this.reactComponentRef.setState({ ...this.$props.passedProps })
+        }
       },
       deep: true,
     },

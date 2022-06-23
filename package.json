@@ -1,25 +1,15 @@
 {
   "name": "vuera",
   "description": "Use React in Vue and Vue in React",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "repository": "akxcv/vuera",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
   "main": "dist/vuera.cjs.js",
   "modules": "dist/vuera.es.js",
   "unpkg": "dist/vuera.iife.js",
-  "files": [
-    "dist",
-    "babel.js"
-  ],
-  "keywords": [
-    "vue",
-    "react",
-    "interop",
-    "adapter",
-    "migrate",
-    "seamless-integration"
-  ],
+  "files": ["dist", "babel.js"],
+  "keywords": ["vue", "react", "interop", "adapter", "migrate", "seamless-integration"],
   "peerDependencies": {
     "react": ">= 15.2.0",
     "react-dom": ">= 15.2.0",
@@ -68,29 +58,10 @@
     "precommit": "lint-staged && yarn run build && git add dist"
   },
   "lint-staged": {
-    "*.json": [
-      "prettier --write",
-      "git add"
-    ],
-    "src/**/*.js": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ],
-    "tests/**/*.js": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ],
-    "/*.js": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ],
-    "babel.js": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ]
+    "*.json": ["prettier --write", "git add"],
+    "src/**/*.js": ["prettier --write", "eslint --fix", "git add"],
+    "tests/**/*.js": ["prettier --write", "eslint --fix", "git add"],
+    "/*.js": ["prettier --write", "eslint --fix", "git add"],
+    "babel.js": ["prettier --write", "eslint --fix", "git add"]
   }
 }
